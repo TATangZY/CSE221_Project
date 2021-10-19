@@ -1,0 +1,187 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Template for USENIX papers.
+%
+% History:
+%
+% - TEMPLATE for Usenix papers, specifically to meet requirements of
+%   USENIX '05. originally a template for producing IEEE-format
+%   articles using LaTeX. written by Matthew Ward, CS Department,
+%   Worcester Polytechnic Institute. adapted by David Beazley for his
+%   excellent SWIG paper in Proceedings, Tcl 96. turned into a
+%   smartass generic template by De Clarke, with thanks to both the
+%   above pioneers. Use at your own risk. Complaints to /dev/null.
+%   Make it two column with no page numbering, default is 10 point.
+%
+% - Munged by Fred Douglis <douglis@research.att.com> 10/97 to
+%   separate the .sty file from the LaTeX source template, so that
+%   people can more easily include the .sty file into an existing
+%   document. Also changed to more closely follow the style guidelines
+%   as represented by the Word sample file.
+%
+% - Note that since 2010, USENIX does not require endnotes. If you
+%   want foot of page notes, don't include the endnotes package in the
+%   usepackage command, below.
+% - This version uses the latex2e styles, not the very ancient 2.09
+%   stuff.
+%
+% - Updated July 2018: Text block size changed from 6.5" to 7"
+%
+% - Updated Dec 2018 for ATC'19:
+%
+%   * Revised text to pass HotCRP's auto-formatting check, with
+%     hotcrp.settings.submission_form.body_font_size=10pt, and
+%     hotcrp.settings.submission_form.line_height=12pt
+%
+%   * Switched from \endnote-s to \footnote-s to match Usenix's policy.
+%
+%   * \section* => \begin{abstract} ... \end{abstract}
+%
+%   * Make template self-contained in terms of bibtex entires, to allow
+%     this file to be compiled. (And changing refs style to 'plain'.)
+%
+%   * Make template self-contained in terms of figures, to
+%     allow this file to be compiled. 
+%
+%   * Added packages for hyperref, embedding fonts, and improving
+%     appearance.
+%   
+%   * Removed outdated text.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[letterpaper,twocolumn,10pt]{article}
+\usepackage{placeins}
+\usepackage{minted}
+\usemintedstyle{vs}
+% color the table
+\PassOptionsToPackage{table}{xcolor}
+\usepackage{colortbl}
+\usepackage{float}
+% table number
+\usepackage{caption}
+
+% to be able to draw some self-contained figs
+\usepackage{tikz}
+\usepackage{amsmath}
+
+% inlined bib file
+\usepackage{filecontents}
+
+%-------------------------------------------------------------------------------
+\begin{document}
+%-------------------------------------------------------------------------------
+
+%don't want date printed
+\date{}
+
+% make title bold and 14 pt font (Latex default is non-bold, 16 pt)
+\title{\Large \bf CS221 Project Performance Report of a System}
+
+%for single author (just remove % characters)
+\author{
+{\rm Yucheng Wang}
+\and
+{\rm Ziyu Tang}
+} % end author
+
+\maketitle
+
+%-------------------------------------------------------------------------------
+\begin{abstract}
+%-------------------------------------------------------------------------------
+
+\end{abstract}
+
+
+%-------------------------------------------------------------------------------
+\section{Introduction}
+%-------------------------------------------------------------------------------
+\hspace{2em}For this project, we are evaluating a personal computer with an Ubuntu 20.04 system. We are mainly going to use bash script, C and C++ to implement our measurement on CPU cache size, I/O speed, bus speed, etc. The gcc version for C compiler is 9.3.0. The GNU bash is version 5.0.17(1)-release. To ensure the progress of this project, we are setting up subgoals for each week and zoom meetings (or in-person meetings) to discuss weekly objectives. As for the current week, we are mainly looking into useful commands to retrieve relevant hardware information and completing checkpoint 1. Additionally, we are planning on spending 2 hours per week. 
+
+%-------------------------------------------------------------------------------
+\section{Measurement Tool}
+%-------------------------------------------------------------------------------
+\hspace{2em}We are listing commands and measurement tools that are used to print out basic specifications of our system. As the project progresses, we will be using bash script, C and C++ to implement our own measurement for in-depth details of each hardware and software.
+\begin{itemize}
+  \vspace{-0.2cm}\item Check bash version:		bash --version
+  \vspace{-0.2cm}\item Check gcc version:		gcc --version
+  \vspace{-0.2cm}\item Check RAM speed:		sudo dmidecode --type 17
+  \vspace{-0.2cm}\item PC specification:		hwinfo
+  \vspace{-0.2cm}\item Device details:			sudo lshw -short
+\end{itemize}
+
+
+%-------------------------------------------------------------------------------
+\section{Machine Description}
+%-------------------------------------------------------------------------------
+Using existing measuring tool from the system, we retrieve the following spec list for our machine. Notice since both disks are SSDs, there is no RPM for their specification.
+% Please add the following required packages to your document preamble:
+% \usepackage[table,xcdraw]{xcolor}
+% If you use beamer only pass "xcolor=table" option, i.e. \documentclass[xcolor=table]{beamer}
+\begin{table}[h!]
+\centering
+\begin{tabular}{ll}
+\hline
+\multicolumn{2}{c}{\cellcolor[HTML]{ABB2B9}CPU}                                                                                                  \\ \hline
+\cellcolor[HTML]{D5D8DC}Mode               & AMD Ryzen 9 5900X                                                                                   \\
+\cellcolor[HTML]{D5D8DC}Cycle Time         & \begin{tabular}[c]{@{}l@{}}a single FMA takes 4 cycles \\ with a throughput of 2/clock\end{tabular} \\
+\cellcolor[HTML]{D5D8DC}L1d cache          & 384 KiB                                                                                             \\
+\cellcolor[HTML]{D5D8DC}L1i cache          & 384 KiB                                                                                             \\
+\cellcolor[HTML]{D5D8DC}L2 cache           & 6 MiB                                                                                               \\
+\cellcolor[HTML]{D5D8DC}L3 cache           & 64 MiB                                                                                              \\
+\cellcolor[HTML]{D5D8DC}I/O Bus            & PCIe 4.0                                                                                            \\
+\cellcolor[HTML]{D5D8DC}Memory Bus         & 64 bits, 3600 mhz                                                                                   \\
+\multicolumn{2}{c}{\cellcolor[HTML]{ABB2B9}Disk}                                                                                                 \\
+\cellcolor[HTML]{D5D8DC}Model               & \begin{tabular}[c]{@{}l@{}}Disk1 Samsung SSD 970 EVO Plus\\ Disk2 Samsung SSD 860\end{tabular}      \\
+\cellcolor[HTML]{D5D8DC}controller cache size  & $>$ 1 GB - 2 GB                                                                                  \\
+\cellcolor[HTML]{D5D8DC}Capacity           & 4 TB (2 * 2 TB)                                                                                     \\ \hline
+\multicolumn{2}{c}{\cellcolor[HTML]{ABB2B9}RAM}                                                                                                  \\
+\cellcolor[HTML]{D5D8DC}Size               & 32 GB (2 * 16 GB)                                                                                   \\
+\cellcolor[HTML]{D5D8DC}Total Width        & 64 bits                                                                                             \\
+\cellcolor[HTML]{D5D8DC}Type               & DDR4                                                                                                \\
+\cellcolor[HTML]{D5D8DC}Memory Technology  & DRAM                                                                                                \\
+\cellcolor[HTML]{D5D8DC}Speed              & 2133 MT/s                                                                                           \\
+\cellcolor[HTML]{D5D8DC}Form Factor        & DIMM                                                                                                \\
+\multicolumn{2}{c}{\cellcolor[HTML]{ABB2B9}Network Card}                                                                                         \\
+\cellcolor[HTML]{D5D8DC}Speed              & \begin{tabular}[c]{@{}l@{}}Wi-Fi6, a single\\ stream at 3.5 Gbps\end{tabular}                       \\
+\multicolumn{2}{c}{\cellcolor[HTML]{ABB2B9}Operating System}                                                                                     \\
+\cellcolor[HTML]{D5D8DC}Release \& Version & Ubuntu 20.04 (August 26, 2021)                                                                                       \\
+                                           &                                
+\end{tabular}
+\caption{System Configuration}
+\end{table}
+
+%-------------------------------------------------------------------------------
+\section{Experiments}
+
+
+\subsection{CPU, Scheduling and OS Services}
+For the following measurement operation, we are using existing command for the time being.
+\begin{enumerate}
+	\item Measurement overhead:\\
+	For measuring overhead of reading time, we may use \mintinline{MySQL}{rdtscp} or \mintinline{MySQL}{rdtsc} to measure fine-grained operations this these.
+	We may setup timestamp before reading and after reading to measure the difference in time.
+	\item Procedure call overhead:\\
+	For measuring procedure call, we may use \mintinline{MySQL}{rdtscp} or \mintinline{MySQL}{rdtsc} to measure fine-grained operations this these.
+	We may setup timestamp before increment and after increment to measure the difference in time.
+	\item System call overhead:\\
+	For system call and kernel operation, we may use \mintinline{MySQL}{rdtscp} or \mintinline{MySQL}{rdtsc} to measure fine-grained operations this these.
+	\item Task creation time:\\
+	For task creation and execution time measurement, we can add \mintinline{MySQL}{time} before the command. For more specific program or method, we may set timestamp to measure time differences.
+	
+	\item Context switch time:\\
+	We can setup a program that takes 2 processes, P1 and P2. Right after finishing executing P1, we switch to P2 to continue our execution. During these operation, we could set timestamp to measure time differences.
+\end{enumerate}
+
+\subsection{Memory}
+
+\subsection{Network}
+
+\subsection{File System}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%  LocalWords:  endnotes includegraphics fread ptr nobj noindent
+%%  LocalWords:  pdflatex acks
